@@ -1,29 +1,42 @@
-string preorder(Node* root,unordered_map<string,int> &mp)
+void inOrder(Node* root,vector<int> &v)
 {
-    string s;
     if(root==NULL)
-        return "$";
-    if(root->left==NULL && root->right==NULL)
-    {
-        s+=to_string(root->data);
-        return s;
-    }
-    
-    s+=to_string(root->data);
-    s+=preorder(root->left,mp);
-    s+=preorder(root->right,mp);   
-    mp[s]++;
-    return s;
+     return;
+   
+    inOrder(root->left,v);
+   
+    v.push_back(root->data);
+   
+    inOrder(root->right,v);
 }
 
-bool dupSub(Node *root)
+void traverse(Node* root,map<vector<int>,int> &mp)
 {
-    unordered_map<string,int> mp;
-    preorder(root,mp);
-    for(auto x:mp)
-    {
-    if(x.second>=2)
-    return true;
-    }
-  return false;
+    if(root==NULL)
+      return;
+    
+    vector<int> v;
+    inOrder(root,v);
+    mp[v]++;
+    
+    traverse(root->left,mp);
+    
+    traverse(root->right,mp);
+    
 }
+
+bool dupSub(Node* root)
+{
+    map<vector<int>,int> mp;
+    traverse(root,mp);
+    int flag=0;
+    for(auto i:mp)
+    {
+         if(i.second>1 and i.first.size()>=2)
+         {
+            return 1;
+            flag=1;
+            break;
+         }
+    }
+    return 0;
